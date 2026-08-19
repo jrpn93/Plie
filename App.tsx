@@ -7,7 +7,7 @@
 
 import { StatusBar, useColorScheme } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import AppRouter from './src/router/router';
+import AppRouter from './src/router/root.router';
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
