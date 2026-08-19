@@ -10,8 +10,8 @@ This is a React Native CLI template project (`Plie`) bootstrapped with `@react-n
 - **Testing**: Jest + React Test Renderer
 - **Linting**: ESLint with React Native config
 - **Formatting**: Prettier
-- **State Management**: Redux Toolkit + Redux Saga
-- **Navigation**: React Navigation (Bottom Tabs)
+- **State Management**: Redux Toolkit + Redux Saga (not installed yet)
+- **Navigation**: React Navigation (Stack + Bottom Tabs)
 
 ## Project Structure
 ```
@@ -20,25 +20,39 @@ Plie/
 ├── ios/                  # iOS native code
 ├── src/
 │   ├── api/              # API client & endpoints
-│   │   ├── client.ts     # Axios/fetch client setup
-│   │   └── api.ts        # API endpoint definitions
+│   │   ├── client.ts     # Axios/fetch client setup (EMPTY)
+│   │   └── api.ts        # API endpoint definitions (EMPTY)
 │   ├── constants/        # App constants
-│   │   ├── colors.ts     # Color palette
-│   │   ├── fonts.ts      # Font families & weights
-│   │   ├── images.ts     # Image assets references
-│   │   ├── storage-keys.ts # AsyncStorage/MM KV keys
-│   │   └── constants.ts  # General constants
-│   ├── store/            # Redux store (created)
-│   │   └── index.ts      # Store configuration (empty)
+│   │   ├── colors.ts     # Color palette ✅
+│   │   ├── fonts.ts      # Font families & weights ✅
+│   │   ├── images.ts     # Image assets references ✅
+│   │   ├── storage-keys.ts # AsyncStorage/MM KV keys (EMPTY)
+│   │   ├── constants.ts  # General constants ✅
+│   │   └── routes.ts     # Route names ✅
+│   ├── store/            # Redux store
+│   │   └── index.ts      # Store configuration (EMPTY)
 │   ├── types/            # TypeScript types
-│   │   └── index.ts      # Type definitions (empty)
-│   ├── components/       # Reusable components (to create)
-│   ├── screens/          # Screen components (to create)
-│   ├── navigation/       # Navigation configuration (to create)
-│   ├── utils/            # Utility functions (to create)
-│   └── assets/           # Images, fonts, etc. (to create)
-├── __tests__/            # Jest test files
-├── App.tsx               # Main app component
+│   │   └── index.ts      # Type definitions (EMPTY)
+│   ├── components/       # Reusable components
+│   │   ├── AppText.tsx   # Wrapper text component ✅
+│   │   └── AppTextInput.tsx # Text input with label/eye button ✅
+│   ├── screens/          # Screen components
+│   │   ├── login.screen.tsx      # Login UI ✅ (no API)
+│   │   ├── home.screen.tsx       # Basic placeholder ✅
+│   │   └── bottom-tab/
+│   │       ├── events.screen.tsx    # EMPTY
+│   │       ├── search.screen.tsx    # EMPTY
+│   │       ├── favourites.screen.tsx # EMPTY
+│   │       └── profile.screen.tsx   # EMPTY
+│   ├── router/           # Navigation configuration
+│   │   ├── root.router.tsx        # Stack navigator ✅
+│   │   └── bottom-tab.router.tsx  # Bottom tabs (only Home) ✅
+│   ├── utils/            # Utility functions
+│   │   └── RNSize.ts     # Responsive sizing helpers ✅
+│   └── assets/           # Images, fonts, etc.
+│       └── images/       # logo.png, dancing-girl-bg.png, eye.png, eye-off.png ✅
+├── __tests__/            # Jest test files (EMPTY)
+├── App.tsx               # Main app component ✅
 ├── babel.config.js       # Babel configuration
 ├── metro.config.js       # Metro bundler config
 ├── tsconfig.json         # TypeScript config
@@ -62,24 +76,28 @@ Plie/
 - Centered text (app name/logo)
 - Branding at bottom-center
 - Auto-navigate to Login after delay or auth check
+- **Status: NOT STARTED**
 
 ### 2. Login Screen
 - Email/password fields with validation
 - Login API integration
 - Error handling & loading states
 - Redirect to main app on success
+- **Status: UI COMPLETE** (AppTextInput with eye button, validation pending, no API integration)
 
 ### 3. State Management: Redux + Saga
 - **Redux Toolkit** for store setup
 - **Redux Saga** for async API calls
 - Slices: `auth`, `events`, `favourites`, `profile`
 - Saga watchers for: login, fetchEvents, toggleFavourite, fetchProfile
+- **Status: NOT STARTED** (dependencies not installed, store/index.ts empty)
 
 ### 4. Main App - 4 Bottom Tabs
 1. **Search** - Search events with debounced input
 2. **Events** - List of events with pull-to-refresh
 3. **Favourites** - User's favourited events
 4. **Profile** - User profile & settings
+- **Status: ROUTER SETUP DONE** (bottom-tab.router.tsx exists but only has Home tab)
 
 ### 5. Events Screen
 - Fetch events from API
@@ -87,24 +105,28 @@ Plie/
 - **Pull-to-refresh** implementation
 - FlatList/SectionList for performance
 - Each event card: image, title, date, location, favourite button
+- **Status: NOT STARTED** (file exists but empty)
 
 ### 6. Search Screen
 - Search bar with debounced API calls
 - Results list with skeleton loading
 - Clear search functionality
 - Recent searches (optional)
+- **Status: NOT STARTED** (file exists but empty)
 
 ### 7. Favourites - Optimistic UI
 - Tap favourite button → immediate UI update
 - Background API call to add/remove favourite
 - Rollback on API failure with error toast
 - Persist favourites in Redux + AsyncStorage
+- **Status: NOT STARTED** (file exists but empty)
 
 ### 8. Profile Screen
 - Profile picture (editable)
 - Name & email display
 - 5 option items (e.g., Settings, Notifications, Help, About, Logout)
 - Logout clears auth & navigates to Login
+- **Status: NOT STARTED** (file exists but empty)
 
 ## API Endpoints (To Be Implemented)
 | Endpoint | Method | Description |
@@ -121,14 +143,14 @@ Plie/
 ## Architecture Notes
 
 ### Component Structure
-- **App.tsx**: Root with Providers (Redux, Navigation, SafeArea)
-- **Screens**: Splash, Login, MainTabs (Search, Events, Favourites, Profile)
-- **Shared Components**: EventCard, SkeletonLoader, SearchBar, BottomTabBar
+- **App.tsx**: Root with Providers (SafeArea, Navigation) - Redux Provider missing
+- **Screens**: Login, Home, MainTabs (Search, Events, Favourites, Profile)
+- **Shared Components**: AppText, AppTextInput, (EventCard, SkeletonLoader, SearchBar, BottomTabBar - to create)
 
 ### Redux Store Structure (Planned)
 ```
 store/
-├── index.ts              # Store configuration (created, empty)
+├── index.ts              # Store configuration (EMPTY)
 ├── rootSaga.ts           # Root saga (to create)
 ├── slices/
 │   ├── authSlice.ts      # User auth state (to create)
@@ -152,6 +174,7 @@ store/
 - Component tests for screens & shared components
 - Integration tests for navigation flows
 - Jest with React Native preset
+- **Status: NOT STARTED**
 
 ## Development Setup
 
@@ -178,17 +201,19 @@ npm install react-native-gesture-handler react-native-reanimated
 npm install axios react-native-mmkv @react-native-async-storage/async-storage
 ```
 
+**Note:** Navigation dependencies already installed. Redux, Saga, Axios, MMKV, AsyncStorage still needed.
+
 ## Key Files for Review
-- `src/store/index.ts` - Redux store with Saga middleware (created, empty)
-- `src/api/client.ts` - API client setup (created, empty)
-- `src/api/api.ts` - API endpoints (created, empty)
-- `src/types/index.ts` - TypeScript types (created, empty)
-- `src/constants/` - Constants (colors, fonts, images, storage keys)
+- `src/store/index.ts` - Redux store with Saga middleware (EMPTY)
+- `src/api/client.ts` - API client setup (EMPTY)
+- `src/api/api.ts` - API endpoints (EMPTY)
+- `src/types/index.ts` - TypeScript types (EMPTY)
+- `src/constants/` - Constants (colors, fonts, images, routes, storage-keys partially done)
 - `src/store/slices/*.ts` - Feature slices (to create)
 - `src/store/sagas/*.ts` - API sagas (to create)
-- `src/navigation/` - Navigation setup (to create)
-- `src/screens/` - All screen components (to create)
-- `src/components/` - Reusable UI components (to create)
+- `src/router/` - Navigation setup (DONE: root + bottom-tab)
+- `src/screens/` - Screen components (Login & Home done, others empty)
+- `src/components/` - Reusable UI components (AppText, AppTextInput done)
 
 ## Evaluation Criteria
 - Code organization and modularity
@@ -203,18 +228,22 @@ npm install axios react-native-mmkv @react-native-async-storage/async-storage
 ## Implementation Checklist (Track Progress)
 
 ### Phase 1: Setup & Splash
-- [ ] Install dependencies (Redux, Navigation, Saga, etc.)
+- [x] Install Navigation dependencies (@react-navigation/native, bottom-tabs, native-stack, screens, safe-area-context)
+- [ ] Install Redux dependencies (@reduxjs/toolkit, redux-saga, react-redux)
+- [ ] Install API/Storage dependencies (axios, react-native-mmkv, @react-native-async-storage/async-storage)
 - [ ] Configure Redux store with Saga middleware
-- [ ] Set up React Navigation (Stack + Bottom Tabs)
+- [ ] Set up React Navigation (Stack + Bottom Tabs) ✅ (basic structure done)
 - [ ] Create Splash screen with background image
 - [ ] Add auto-navigation logic (auth check)
 
 ### Phase 2: Auth
-- [ ] Login screen UI
-- [ ] Login API service
+- [x] Login screen UI (AppTextInput with eye toggle, styling)
+- [ ] Login form validation
+- [ ] Login API service (src/api/client.ts, src/api/api.ts)
 - [ ] Auth slice + saga
 - [ ] Token storage (AsyncStorage/MMKV)
 - [ ] Protected routes / auth guard
+- [ ] Add Redux Provider to App.tsx
 
 ### Phase 3: Events & Search
 - [ ] Events API service
@@ -224,6 +253,7 @@ npm install axios react-native-mmkv @react-native-async-storage/async-storage
 - [ ] Pull-to-refresh
 - [ ] Search screen with debounced search
 - [ ] Search API integration
+- [ ] Add Search, Events, Favourites, Profile tabs to bottom-tab.router.tsx
 
 ### Phase 4: Favourites (Optimistic UI)
 - [ ] Favourites slice + saga
