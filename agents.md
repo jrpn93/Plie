@@ -19,14 +19,24 @@ Plie/
 ├── android/              # Android native code
 ├── ios/                  # iOS native code
 ├── src/
-│   ├── components/       # Reusable components
-│   ├── screens/          # Screen components
-│   ├── navigation/       # Navigation configuration
-│   ├── store/            # Redux store, slices, sagas
-│   ├── services/         # API services
+│   ├── api/              # API client & endpoints
+│   │   ├── client.ts     # Axios/fetch client setup
+│   │   └── api.ts        # API endpoint definitions
+│   ├── constants/        # App constants
+│   │   ├── colors.ts     # Color palette
+│   │   ├── fonts.ts      # Font families & weights
+│   │   ├── images.ts     # Image assets references
+│   │   ├── storage-keys.ts # AsyncStorage/MM KV keys
+│   │   └── constants.ts  # General constants
+│   ├── store/            # Redux store (created)
+│   │   └── index.ts      # Store configuration (empty)
 │   ├── types/            # TypeScript types
-│   ├── utils/            # Utility functions
-│   └── assets/           # Images, fonts, etc.
+│   │   └── index.ts      # Type definitions (empty)
+│   ├── components/       # Reusable components (to create)
+│   ├── screens/          # Screen components (to create)
+│   ├── navigation/       # Navigation configuration (to create)
+│   ├── utils/            # Utility functions (to create)
+│   └── assets/           # Images, fonts, etc. (to create)
 ├── __tests__/            # Jest test files
 ├── App.tsx               # Main app component
 ├── babel.config.js       # Babel configuration
@@ -115,16 +125,16 @@ Plie/
 - **Screens**: Splash, Login, MainTabs (Search, Events, Favourites, Profile)
 - **Shared Components**: EventCard, SkeletonLoader, SearchBar, BottomTabBar
 
-### Redux Store Structure
+### Redux Store Structure (Planned)
 ```
 store/
-├── index.ts              # Store configuration
-├── rootSaga.ts           # Root saga
+├── index.ts              # Store configuration (created, empty)
+├── rootSaga.ts           # Root saga (to create)
 ├── slices/
-│   ├── authSlice.ts      # User auth state
-│   ├── eventsSlice.ts    # Events list, loading, error
-│   ├── favouritesSlice.ts # Favourite IDs & items
-│   └── profileSlice.ts   # Profile data
+│   ├── authSlice.ts      # User auth state (to create)
+│   ├── eventsSlice.ts    # Events list, loading, error (to create)
+│   ├── favouritesSlice.ts # Favourite IDs & items (to create)
+│   └── profileSlice.ts   # Profile data (to create)
 └── sagas/
     ├── authSaga.ts
     ├── eventsSaga.ts
@@ -169,12 +179,16 @@ npm install axios react-native-mmkv @react-native-async-storage/async-storage
 ```
 
 ## Key Files for Review
-- `src/store/index.ts` - Redux store with Saga middleware
-- `src/store/slices/*.ts` - Feature slices
-- `src/store/sagas/*.ts` - API sagas
-- `src/navigation/` - Navigation setup
-- `src/screens/` - All screen components
-- `src/components/` - Reusable UI components
+- `src/store/index.ts` - Redux store with Saga middleware (created, empty)
+- `src/api/client.ts` - API client setup (created, empty)
+- `src/api/api.ts` - API endpoints (created, empty)
+- `src/types/index.ts` - TypeScript types (created, empty)
+- `src/constants/` - Constants (colors, fonts, images, storage keys)
+- `src/store/slices/*.ts` - Feature slices (to create)
+- `src/store/sagas/*.ts` - API sagas (to create)
+- `src/navigation/` - Navigation setup (to create)
+- `src/screens/` - All screen components (to create)
+- `src/components/` - Reusable UI components (to create)
 
 ## Evaluation Criteria
 - Code organization and modularity
