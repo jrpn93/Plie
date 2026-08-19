@@ -7,4 +7,10 @@ export const Images = {
     APPLE_LOGO: require('../assets/images/apple-logo.png'),
     GOOGLE_LOGO: require('../assets/images/google.png'),
     FACEBOOK_LOGO: require('../assets/images/facebook.png'),
+    HOME_ICON: require('../assets/images/house.png'),
+    SEARCH_ICON: require('../assets/images/search.png'),
+    EVENTS_ICON: require('../assets/images/calendar-days.png'),
+    HEART_ICON: require('../assets/images/heart.png'),
+    PROFILE_ICON: require('../assets/images/user-round.png'),
+    PROFILE_PLACEHOLDER: require('../assets/images/user-round.png'),
 };

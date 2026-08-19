@@ -20,6 +20,7 @@ interface AppTextInputProps extends TextInputProps {
   containerStyle?: any;
   inputStyle?: any;
   labelStyle?: any;
+  error?: string | undefined;
 }
 
 const AppTextInput: React.FC<AppTextInputProps> = ({
@@ -29,6 +30,7 @@ const AppTextInput: React.FC<AppTextInputProps> = ({
   containerStyle,
   inputStyle,
   labelStyle,
+  error,
   ...props
 }) => {
   const [isSecure, setIsSecure] = useState(secureTextEntry);
@@ -40,7 +42,11 @@ const AppTextInput: React.FC<AppTextInputProps> = ({
     <View style={[styles.container, containerStyle]}>
       <AppText style={[styles.label, labelStyle]}>{label}</AppText>
       <View
-        style={[styles.inputWrapper, isFocused && styles.inputWrapperFocused]}
+        style={[
+          styles.inputWrapper,
+          isFocused && styles.inputWrapperFocused,
+          error && styles.inputWrapperError,
+        ]}
       >
         <TextInput
           secureTextEntry={isSecure}
@@ -63,6 +69,7 @@ const AppTextInput: React.FC<AppTextInputProps> = ({
           </Pressable>
         )}
       </View>
+      {error && <AppText style={styles.errorText}>{error}</AppText>}
     </View>
   );
 };
@@ -90,6 +97,9 @@ const styles = StyleSheet.create({
   inputWrapperFocused: {
     borderColor: Colors.primary,
   },
+  inputWrapperError: {
+    borderColor: Colors.error,
+  },
   input: {
     flex: 1,
     fontSize: FontSize.fs5,
@@ -98,5 +108,9 @@ const styles = StyleSheet.create({
   },
   eyeButton: {
     padding: mw(2),
+  },
+  errorText: {
+    fontSize: FontSize.fs2,
+    color: Colors.error,
   },
 });

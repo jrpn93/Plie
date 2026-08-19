@@ -1,20 +1,15 @@
 import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { ROUTES } from '../constants/routes';
-import BottomTabRouter from './bottom-tab.router';
-import LoginScreen from '../screens/login.screen';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store';
+import AuthStack from './auth.stack';
+import AppStack from './app.stack';
 
-const Stack = createNativeStackNavigator();
+const RootStack = () => {
+  const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
 
-function RootStack() {
-  return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name={ROUTES.LOGIN} component={LoginScreen} />
-      <Stack.Screen name={ROUTES.HOME} component={BottomTabRouter} />
-    </Stack.Navigator>
-  );
-}
+  return isAuthenticated ? <AppStack /> : <AuthStack />;
+};
 
 export default function AppRouter() {
   return (

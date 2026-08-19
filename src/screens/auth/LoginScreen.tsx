@@ -1,21 +1,50 @@
+import React from 'react';
 import {
-  StyleSheet,
-  View,
-  Image,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
   Pressable,
+  View,
+  Image,
+  StyleSheet,
 } from 'react-native';
-import React from 'react';
-import { Colors } from '../constants/colors';
-import { FontSize } from '../constants/fonts';
-import { Images } from '../constants/images';
-import { mw, h, w } from '../utils/RNSize';
-import AppText from '../components/AppText';
-import AppTextInput from '../components/AppTextInput';
+import { Colors } from '../../constants/colors';
+import { FontSize } from '../../constants/fonts';
+import { Images } from '../../constants/images';
+import { mw, h, w } from '../../utils/RNSize';
+import AppText from '../../components/AppText';
+import AppTextInput from '../../components/AppTextInput';
+import { loginRequest, clearError } from '../../store/slices/authSlice';
+import { useAppDispatch, useAppSelector } from '../../hooks/useRedux';
 
 const LoginScreen: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const { isLoading, error } = useAppSelector(state => state.auth);
+
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
+
+  const handleLogin = () => {
+    dispatch(clearError());
+    dispatch(loginRequest({ email, password }));
+  };
+
+  const handleForgotPassword = () => {
+    // Navigate to forgot password screen
+  };
+
+  const handleSignUp = () => {
+    // Navigate to register screen
+  };
+
+  const handleSocialLogin = (_provider: 'apple' | 'google' | 'facebook') => {
+    // Handle social login
+  };
+
+  const handleGuestLogin = () => {
+    // Handle guest login
+  };
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -45,6 +74,9 @@ const LoginScreen: React.FC = () => {
                   autoCapitalize="none"
                   autoComplete="email"
                   returnKeyType="next"
+                  value={email}
+                  onChangeText={setEmail}
+                  error={error && !password ? error : undefined}
                 />
                 <AppTextInput
                   label="Password"
@@ -53,11 +85,18 @@ const LoginScreen: React.FC = () => {
                   showEyeButton
                   autoComplete="password"
                   returnKeyType="done"
+                  value={password}
+                  onChangeText={setPassword}
+                  error={error ? error : undefined}
+                  onSubmitEditing={handleLogin}
                 />
               </View>
 
               <View style={styles.forgotPasswordContainer}>
-                <AppText onPress={() => {}} style={styles.forgotPasswordText}>
+                <AppText
+                  onPress={handleForgotPassword}
+                  style={styles.forgotPasswordText}
+                >
                   Forgot Password?
                 </AppText>
               </View>
@@ -68,14 +107,23 @@ const LoginScreen: React.FC = () => {
                 color: Colors.primaryLight,
                 borderless: false,
               }}
-              style={styles.signInButton}
+              style={[
+                styles.signInButton,
+                isLoading && styles.signInButtonDisabled,
+              ]}
+              onPress={handleLogin}
+              disabled={isLoading}
             >
-              <AppText style={styles.signInButtonText}>Sign In</AppText>
+              <AppText style={styles.signInButtonText}>
+                {isLoading ? 'Signing In...' : 'Sign In'}
+              </AppText>
             </Pressable>
 
             <View style={styles.signUpContainer}>
               <AppText style={styles.signUpText}>Not a member? </AppText>
-              <AppText style={styles.signUpLink}>Sign Up Here</AppText>
+              <AppText onPress={handleSignUp} style={styles.signUpLink}>
+                Sign Up Here
+              </AppText>
             </View>
 
             <View style={styles.dividerContainer}>
@@ -85,20 +133,32 @@ const LoginScreen: React.FC = () => {
             </View>
 
             <View style={styles.socialButtonsContainer}>
-              <Pressable style={styles.socialButton} onPress={() => {}}>
+              <Pressable
+                style={styles.socialButton}
+                onPress={() => handleSocialLogin('apple')}
+              >
                 <Image source={Images.APPLE_LOGO} style={styles.socialIcon} />
               </Pressable>
-              <Pressable style={styles.socialButton} onPress={() => {}}>
+              <Pressable
+                style={styles.socialButton}
+                onPress={() => handleSocialLogin('google')}
+              >
                 <Image source={Images.GOOGLE_LOGO} style={styles.socialIcon} />
               </Pressable>
-              <Pressable style={styles.socialButton} onPress={() => {}}>
-                <Image source={Images.FACEBOOK_LOGO} style={styles.socialIcon} />
+              <Pressable
+                style={styles.socialButton}
+                onPress={() => handleSocialLogin('facebook')}
+              >
+                <Image
+                  source={Images.FACEBOOK_LOGO}
+                  style={styles.socialIcon}
+                />
               </Pressable>
             </View>
 
             <Pressable
               style={styles.guestButton}
-              onPress={() => {}}
+              onPress={handleGuestLogin}
               android_ripple={{ color: Colors.border, borderless: false }}
             >
               <AppText style={styles.guestButtonText}>Enter as Guest</AppText>
@@ -162,6 +222,11 @@ const styles = StyleSheet.create({
     shadowRadius: mw(8),
     elevation: 4,
   },
+  signInButtonDisabled: {
+    backgroundColor: Colors.textMuted,
+    shadowOpacity: 0,
+    elevation: 0,
+  },
   signInButtonText: {
     fontSize: FontSize.fs6,
     fontWeight: '600',
@@ -202,7 +267,8 @@ const styles = StyleSheet.create({
   dividerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: h(24),
+    marginBottom: h(15),
+    marginTop: h(20),
     gap: w(12),
   },
   dividerLine: {
@@ -219,7 +285,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     gap: w(16),
-    marginTop: h(8),
   },
   socialButton: {
     width: mw(48),

@@ -1,7 +1,7 @@
 export const CONST = {
   DEFAULT_TEXT_PROPS: {
-    // allowFontScaling: false,
     maxFontSizeMultiplier: 1.1,
-    maxLength: 255, // this will be used in the TextInput components affecting the whole app
+    maxLength: 255,
   },
+  API_BASE_URL: 'https://techeruditestaging.com/projects/plie-api/public/api',
 };
