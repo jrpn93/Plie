@@ -1,32 +1,12 @@
 import React from 'react';
-import { View, StyleSheet, TextInput, FlatList, Pressable, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, TextInput, FlatList, ActivityIndicator, Image } from 'react-native';
 import { Colors } from '../../constants/colors';
 import { FontSize } from '../../constants/fonts';
 import { mw, h, w } from '../../utils/RNSize';
 import AppText from '../../components/AppText';
 import { Api, Event } from '../../api/api';
-
-const EventCard: React.FC<{ event: Event; onFavourite: (eventId: number) => void }> = ({ event, onFavourite }) => (
-  <View style={styles.card}>
-    <View style={styles.cardHeader}>
-      <AppText style={styles.cardTitle}>{event.event_name}</AppText>
-      <Pressable onPress={() => onFavourite(event.event_id)}>
-        <AppText style={event.isFavorite ? [styles.favButton, styles.favButtonActive] : styles.favButton}>
-          {event.isFavorite ? '♥' : '♡'}
-        </AppText>
-      </Pressable>
-    </View>
-    <View style={styles.cardDetails}>
-      <AppText style={styles.detailText}>📅 {event.readable_from_date}{event.readable_to_date ? ` - ${event.readable_to_date}` : ''}</AppText>
-      <AppText style={styles.detailText}>📍 {event.city}, {event.country}</AppText>
-      {event.danceStyles && event.danceStyles.length > 0 && (
-        <AppText style={styles.detailText}>
-          {event.danceStyles.map((ds) => ds.ds_name).join(', ')}
-        </AppText>
-      )}
-    </View>
-  </View>
-);
+import EventCard from '../../components/EventCard';
+import { Images } from '../../constants/images';
 
 const SearchScreen: React.FC = () => {
   const [query, setQuery] = React.useState('');
@@ -75,6 +55,9 @@ const SearchScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
+      <View style={styles.header_logo_container}>
+        <Image source={Images.LOGO} style={styles.header_logo} />
+      </View>
       <View style={styles.searchBarContainer}>
         <TextInput
           style={styles.searchInput}
@@ -93,7 +76,7 @@ const SearchScreen: React.FC = () => {
         <FlatList
           data={results}
           keyExtractor={(item) => String(item.event_date_id)}
-          renderItem={({ item }) => <EventCard event={item} onFavourite={handleFavourite} />}
+          renderItem={({ item }) => <EventCard event={item} onFavourite={handleFavourite} variant="compact" />}
           contentContainerStyle={styles.listContent}
           ListEmptyComponent={
             !hasSearched ? (
@@ -114,6 +97,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.background,
+  },
+  header_logo: {
+    height: h(20),
+    resizeMode: 'contain',
+    alignSelf: 'center',
+  },
+  header_logo_container: {
+    backgroundColor: Colors.background,
+    paddingVertical: h(8),
   },
   searchBarContainer: {
     paddingHorizontal: mw(16),

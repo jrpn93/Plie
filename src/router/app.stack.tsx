@@ -1,9 +1,11 @@
 import * as React from 'react';
 import { View, Image, StyleSheet } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { ROUTES } from '../constants/routes';
 import SearchScreen from '../screens/app/SearchScreen';
 import EventsScreen from '../screens/app/EventsScreen';
+import EventDetailsScreen from '../screens/app/EventDetailsScreen';
 import FavouritesScreen from '../screens/app/FavouritesScreen';
 import ProfileScreen from '../screens/app/ProfileScreen';
 import { Colors } from '../constants/colors';
@@ -13,6 +15,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FontSize } from '../constants/fonts';
 
 const Tab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator();
 
 const TabBarIcon: React.FC<{
   _focused?: boolean;
@@ -50,7 +53,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function AppStack() {
+function AppTabs() {
   const safeAreaInsets = useSafeAreaInsets();
 
   return (
@@ -113,5 +116,17 @@ export default function AppStack() {
         }}
       />
     </Tab.Navigator>
+  );
+}
+
+export default function AppStack() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="AppTabs" component={AppTabs} />
+      <Stack.Screen
+        name={ROUTES.EVENT_DETAILS}
+        component={EventDetailsScreen}
+      />
+    </Stack.Navigator>
   );
 }

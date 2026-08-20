@@ -11,7 +11,7 @@ export interface LoginResponse {
   data: {
     user: User;
     token: string;
-  };
+  } | null;
 }
 
 export interface User {
@@ -87,12 +87,15 @@ export interface ApiError {
 
 export const Api = {
   login: async (data: LoginRequest): Promise<LoginResponse> => {
-    const response = await authClient.post('/login', data);
-    return response.data;
-  },
-
-  refreshToken: async (data: RefreshTokenRequest): Promise<RefreshTokenResponse> => {
-    const response = await authClient.post('/auth/refresh', data);
+    const formData = new FormData();
+    formData.append('email', data.email);
+    formData.append('password', data.password);
+    
+    const response = await authClient.post('/login', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
     return response.data;
   },
 
@@ -112,7 +115,7 @@ export const Api = {
   },
 
   logout: async (): Promise<void> => {
-    await authClient.post('/auth/logout');
+    await new Promise<void>((resolve) => setTimeout(resolve, 300));
   },
 };
 

@@ -5,6 +5,7 @@ export const ROUTES = {
   FORGOT_PASSWORD: 'ForgotPassword',
   SEARCH: 'Search',
   EVENTS: 'Events',
+  EVENT_DETAILS: 'EventDetails',
   FAVOURITES: 'Favourites',
   PROFILE: 'Profile',
 } as const;

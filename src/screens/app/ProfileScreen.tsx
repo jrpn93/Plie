@@ -18,41 +18,65 @@ interface ProfileOption {
 
 const ProfileScreen: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { user, isAuthenticated } = useAppSelector((state) => state.auth);
+  const { user, isAuthenticated } = useAppSelector(state => state.auth);
 
   const options: ProfileOption[] = [
-    { id: 'settings', title: 'Settings', icon: '⚙️', onPress: () => {} },
-    { id: 'notifications', title: 'Notifications', icon: '🔔', onPress: () => {} },
-    { id: 'help', title: 'Help & Support', icon: '❓', onPress: () => {} },
-    { id: 'about', title: 'About', icon: 'ℹ️', onPress: () => {} },
-    { id: 'logout', title: 'Logout', icon: '🚪', onPress: () => dispatch(logout()), isDestructive: true },
+    { id: 'tickets', title: 'My Tickets', icon: '🎟', onPress: () => {} },
+    { id: 'payment', title: 'Payment Methods', icon: '💳', onPress: () => {} },
+    {
+      id: 'notifications',
+      title: 'Notification Settings',
+      icon: '🔔',
+      onPress: () => {},
+    },
+    { id: 'help', title: 'Help & Support', icon: '❔', onPress: () => {} },
+    {
+      id: 'logout',
+      title: 'Logout',
+      icon: '⟵',
+      onPress: () => dispatch(logout()),
+      isDestructive: true,
+    },
   ];
 
   const handleAvatarPress = () => {
     // TODO: Implement image picker
   };
 
+  const avatarSource = user?.usr_profile_img
+    ? { uri: user.usr_profile_img }
+    : Images.PROFILE_PLACEHOLDER;
+
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
+      <View style={styles.logoContainer}>
+        <Image source={Images.LOGO} style={styles.logo} />
+      </View>
+
+      <View style={styles.profileBlock}>
         <Pressable style={styles.avatarContainer} onPress={handleAvatarPress}>
           <Image
-            source={Images.PROFILE_PLACEHOLDER}
+            source={avatarSource}
             style={styles.avatar}
             resizeMode="cover"
           />
           <View style={styles.cameraButton}>
-            <AppText style={styles.cameraIcon}>📷</AppText>
+            <AppText style={styles.cameraIcon}>✎</AppText>
           </View>
         </Pressable>
-        <View style={styles.userInfo}>
-          <AppText style={styles.userName}>{user?.usr_fname && user?.usr_lname ? `${user.usr_fname} ${user.usr_lname}` : 'Guest User'}</AppText>
-          <AppText style={styles.userEmail}>{user?.usr_email || 'guest@example.com'}</AppText>
-        </View>
+
+        <AppText style={styles.userName}>
+          {user?.usr_fname && user?.usr_lname
+            ? `${user.usr_fname} ${user.usr_lname}`
+            : user?.usr_username || 'Dance Enthusiast'}
+        </AppText>
+        <AppText style={styles.userEmail}>
+          {user?.usr_email || 'abc@gmail.com'}
+        </AppText>
       </View>
 
       <View style={styles.optionsContainer}>
-        {options.map((option) => {
+        {options.map(option => {
           const optionRowStyle = option.isDestructive
             ? [styles.optionRow, styles.optionRowDestructive]
             : styles.optionRow;
@@ -65,13 +89,13 @@ const ProfileScreen: React.FC = () => {
               key={option.id}
               style={optionRowStyle}
               onPress={option.isDestructive ? option.onPress : () => {}}
-              android_ripple={{ color: option.isDestructive ? '#FEF2F2' : Colors.borderLight, borderless: false }}
+              android_ripple={{ color: Colors.borderLight, borderless: false }}
             >
               <AppText style={styles.optionIcon}>{option.icon}</AppText>
-              <AppText style={optionTitleStyle}>
-                {option.title}
-              </AppText>
-              {!option.isDestructive && <AppText style={styles.chevron}>›</AppText>}
+              <AppText style={optionTitleStyle}>{option.title}</AppText>
+              {!option.isDestructive && (
+                <AppText style={styles.chevron}>›</AppText>
+              )}
             </Pressable>
           );
         })}
@@ -79,8 +103,12 @@ const ProfileScreen: React.FC = () => {
 
       {!isAuthenticated && (
         <View style={styles.guestNotice}>
-          <AppText style={styles.guestText}>You are browsing as a guest</AppText>
-          <AppText style={styles.guestSubtext}>Sign in to access your profile and save favourites</AppText>
+          <AppText style={styles.guestText}>
+            You are browsing as a guest
+          </AppText>
+          <AppText style={styles.guestSubtext}>
+            Sign in to access your profile and save favourites
+          </AppText>
         </View>
       )}
     </View>
@@ -94,85 +122,98 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.background,
   },
-  header: {
-    flexDirection: 'row',
+  logoContainer: {
     alignItems: 'center',
-    paddingHorizontal: mw(24),
-    paddingTop: h(60),
-    paddingBottom: h(24),
-    backgroundColor: Colors.surface,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.borderLight,
+    paddingTop: h(8),
+    paddingBottom: h(12),
+    backgroundColor: Colors.background,
+  },
+  logo: {
+    height: h(20),
+    resizeMode: 'contain',
+  },
+  profileBlock: {
+    alignItems: 'center',
+    paddingBottom: h(18),
+    backgroundColor: Colors.background,
+    marginTop: h(15),
   },
   avatarContainer: {
     position: 'relative',
-    width: mw(80),
-    height: mw(80),
-    borderRadius: mw(40),
-    backgroundColor: Colors.primaryLight,
+    width: mw(85),
+    height: mw(85),
+    borderRadius: mw(18),
+    backgroundColor: '#E5E1DC',
     justifyContent: 'center',
     alignItems: 'center',
     overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: '#D7D2CC',
+    marginBottom: h(18),
   },
   avatar: {
     width: '100%',
     height: '100%',
-    borderRadius: mw(40),
+    borderRadius: mw(18),
   },
   cameraButton: {
     position: 'absolute',
-    bottom: 0,
-    right: 0,
-    width: mw(28),
-    height: mw(28),
-    borderRadius: mw(14),
-    backgroundColor: Colors.primary,
+    right: -3,
+    bottom: -3,
+    width: mw(34),
+    height: mw(34),
+    borderRadius: mw(10),
+    backgroundColor: '#111111',
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 3,
-    borderColor: Colors.surface,
+    borderWidth: 2,
+    borderColor: Colors.background,
   },
   cameraIcon: {
-    fontSize: FontSize.fs4,
-  },
-  userInfo: {
-    marginLeft: mw(16),
-    flex: 1,
+    fontSize: FontSize.fs5,
+    color: Colors.white,
+    fontWeight: '700',
   },
   userName: {
-    fontSize: FontSize.fs10,
+    fontSize: FontSize.fs12,
     fontWeight: '700',
     color: Colors.text,
+    lineHeight: h(42),
+    textAlign: 'center',
   },
   userEmail: {
-    fontSize: FontSize.fs4,
+    fontSize: FontSize.fs5,
     color: Colors.textSecondary,
     marginTop: h(2),
+    textAlign: 'center',
   },
   optionsContainer: {
-    paddingHorizontal: mw(16),
-    paddingTop: h(16),
-    gap: h(8),
+    marginHorizontal: mw(18),
+    borderWidth: 1,
+    borderColor: Colors.border,
+    borderRadius: mw(12),
+    overflow: 'hidden',
+    backgroundColor: Colors.surface,
   },
   optionRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: h(14),
+    paddingVertical: h(16),
     paddingHorizontal: mw(16),
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.borderLight,
     backgroundColor: Colors.surface,
-    borderRadius: mw(12),
-    borderWidth: 1,
-    borderColor: Colors.borderLight,
   },
   optionRowDestructive: {
-    borderColor: '#FECACA',
+    borderBottomWidth: 0,
   },
   optionIcon: {
     fontSize: FontSize.fs7,
     marginRight: mw(12),
+    width: mw(24),
   },
   optionTitle: {
-    fontSize: FontSize.fs6,
+    fontSize: FontSize.fs7,
     fontWeight: '500',
     color: Colors.text,
     flex: 1,
@@ -181,8 +222,9 @@ const styles = StyleSheet.create({
     color: Colors.error,
   },
   chevron: {
-    fontSize: FontSize.fs8,
+    fontSize: FontSize.fs14,
     color: Colors.textMuted,
+    lineHeight: h(26),
   },
   guestNotice: {
     position: 'absolute',

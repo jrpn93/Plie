@@ -1,63 +1,84 @@
 import React from 'react';
-import { View, StyleSheet, FlatList, Pressable } from 'react-native';
+import { View, StyleSheet, FlatList, Image } from 'react-native';
 import { Colors } from '../../constants/colors';
 import { FontSize } from '../../constants/fonts';
-import { mw, h, w } from '../../utils/RNSize';
+import { mw, h } from '../../utils/RNSize';
 import AppText from '../../components/AppText';
-
-interface Event {
-  id: string;
-  title: string;
-  date: string;
-  location: string;
-  image: string;
-  isFavourite: boolean;
-}
+import { Event } from '../../api/api';
+import EventCard from '../../components/EventCard';
+import { Images } from '../../constants/images';
 
 const mockFavourites: Event[] = [
-  { id: '2', title: 'Tech Conference 2024', date: 'Sep 10-12, 2024', location: 'Moscone Center, SF', image: '', isFavourite: true },
-  { id: '5', title: 'Startup Networking Event', date: 'Dec 3, 2024', location: 'WeWork, Austin', image: '', isFavourite: true },
+  {
+    event_id: 2,
+    event_name: 'Tech Conference 2024',
+    description: 'Annual tech conference',
+    event_profile_pic: '',
+    event_profile_img: '',
+    event_url: '',
+    event_price_from: 100,
+    event_price_to: 500,
+    readable_from_date: 'Sep 10, 2024',
+    readable_to_date: 'Sep 12, 2024',
+    isFavorite: 1,
+    city: 'San Francisco',
+    country: 'USA',
+    keywords: ['tech', 'conference'],
+    danceStyles: [],
+    event_date_id: 2,
+  },
+  {
+    event_id: 5,
+    event_name: 'Startup Networking Event',
+    description: 'Networking for startups',
+    event_profile_pic: '',
+    event_profile_img: '',
+    event_url: '',
+    event_price_from: 0,
+    event_price_to: 0,
+    readable_from_date: 'Dec 3, 2024',
+    readable_to_date: '',
+    isFavorite: 1,
+    city: 'Austin',
+    country: 'USA',
+    keywords: ['startup', 'networking'],
+    danceStyles: [],
+    event_date_id: 5,
+  },
 ];
-
-const EventCard: React.FC<{ event: Event; onRemove: (id: string) => void }> = ({ event, onRemove }) => (
-  <View style={styles.card}>
-    <View style={styles.cardHeader}>
-      <AppText style={styles.cardTitle}>{event.title}</AppText>
-      <Pressable onPress={() => onRemove(event.id)} style={styles.removeButton}>
-        <AppText style={styles.removeButtonText}>Remove</AppText>
-      </Pressable>
-    </View>
-    <View style={styles.cardDetails}>
-      <AppText style={styles.detailText}>📅 {event.date}</AppText>
-      <AppText style={styles.detailText}>📍 {event.location}</AppText>
-    </View>
-  </View>
-);
 
 const FavouritesScreen: React.FC = () => {
   const [favourites, setFavourites] = React.useState<Event[]>(mockFavourites);
 
-  const handleRemove = (id: string) => {
-    setFavourites((prev) => prev.filter((e) => e.id !== id));
+  const handleRemove = (eventId: number) => {
+    setFavourites((prev) => prev.filter((e) => e.event_id !== eventId));
   };
 
   if (favourites.length === 0) {
     return (
-      <View style={styles.emptyContainer}>
-        <AppText style={styles.emptyTitle}>No Favourites Yet</AppText>
-        <AppText style={styles.emptySubtitle}>
-          Events you mark as favourite will appear here.
-        </AppText>
+      <View style={styles.container}>
+        <View style={styles.header_logo_container}>
+          <Image source={Images.LOGO} style={styles.header_logo} />
+        </View>
+        <View style={styles.emptyContainer}>
+          <AppText style={styles.emptyTitle}>No Favourites Yet</AppText>
+          <AppText style={styles.emptySubtitle}>
+            Events you mark as favourite will appear here.
+          </AppText>
+        </View>
       </View>
     );
   }
 
   return (
     <View style={styles.container}>
+      <View style={styles.header_logo_container}>
+        <Image source={Images.LOGO} style={styles.header_logo} />
+      </View>
       <FlatList
         data={favourites}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <EventCard event={item} onRemove={handleRemove} />}
+        keyExtractor={(item) => String(item.event_date_id)}
+        renderItem={({ item }) => <EventCard event={item} onFavourite={() => {}} variant="compact" onRemove={handleRemove} />}
         contentContainerStyle={styles.listContent}
       />
     </View>
@@ -70,6 +91,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.background,
+  },
+  header_logo: {
+    height: h(20),
+    resizeMode: 'contain',
+    alignSelf: 'center',
+  },
+  header_logo_container: {
+    backgroundColor: Colors.background,
+    paddingVertical: h(8),
   },
   emptyContainer: {
     flex: 1,
@@ -93,48 +123,5 @@ const styles = StyleSheet.create({
   listContent: {
     padding: mw(16),
     gap: h(12),
-  },
-  card: {
-    backgroundColor: Colors.surface,
-    borderRadius: mw(16),
-    padding: mw(16),
-    borderWidth: 1,
-    borderColor: Colors.borderLight,
-    shadowColor: Colors.black,
-    shadowOffset: { width: 0, height: h(1) },
-    shadowOpacity: 0.05,
-    shadowRadius: mw(4),
-    elevation: 1,
-  },
-  cardHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: h(8),
-  },
-  cardTitle: {
-    fontSize: FontSize.fs7,
-    fontWeight: '600',
-    color: Colors.text,
-    flex: 1,
-    marginRight: w(8),
-  },
-  removeButton: {
-    backgroundColor: '#FEF2F2',
-    borderRadius: mw(8),
-    paddingVertical: h(6),
-    paddingHorizontal: mw(12),
-  },
-  removeButtonText: {
-    fontSize: FontSize.fs3,
-    fontWeight: '600',
-    color: Colors.error,
-  },
-  cardDetails: {
-    gap: h(4),
-  },
-  detailText: {
-    fontSize: FontSize.fs3,
-    color: Colors.textSecondary,
   },
 });

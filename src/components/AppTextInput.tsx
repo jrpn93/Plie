@@ -20,7 +20,7 @@ interface AppTextInputProps extends TextInputProps {
   containerStyle?: any;
   inputStyle?: any;
   labelStyle?: any;
-  error?: string | undefined;
+  error?: string | null | undefined;
 }
 
 const AppTextInput: React.FC<AppTextInputProps> = ({

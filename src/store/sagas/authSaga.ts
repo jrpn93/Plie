@@ -19,6 +19,11 @@ function* loginSaga(action: LoginRequestAction) {
     const data: LoginRequest = action.payload;
     const response: LoginResponse = yield call(Api.login, data);
     
+    if (!response.success || !response.data) {
+      yield put(loginFailure(response.message || 'Login failed'));
+      return;
+    }
+    
     const accessToken = response.data.token;
     const user = response.data.user;
     
@@ -34,7 +39,7 @@ function* logoutSaga() {
   try {
     yield call(Api.logout);
   } catch {
-    // Ignore logout API errors
+    // Ignore logout simulation errors
   } finally {
     setAuthHeader(null);
     yield put(logout());

@@ -7,6 +7,7 @@ import {
   View,
   Image,
   StyleSheet,
+  Alert,
 } from 'react-native';
 import { Colors } from '../../constants/colors';
 import { FontSize } from '../../constants/fonts';
@@ -17,14 +18,51 @@ import AppTextInput from '../../components/AppTextInput';
 import { loginRequest, clearError } from '../../store/slices/authSlice';
 import { useAppDispatch, useAppSelector } from '../../hooks/useRedux';
 
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 const LoginScreen: React.FC = () => {
   const dispatch = useAppDispatch();
   const { isLoading, error } = useAppSelector(state => state.auth);
 
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
+  const [emailError, setEmailError] = React.useState<string | null>(null);
+  const [passwordError, setPasswordError] = React.useState<string | null>(null);
+
+  const validateEmail = (value: string): boolean => {
+    if (!value.trim()) {
+      setEmailError('Email is required');
+      return false;
+    }
+    if (!emailRegex.test(value)) {
+      setEmailError('Please enter a valid email address');
+      return false;
+    }
+    setEmailError(null);
+    return true;
+  };
+
+  const validatePassword = (value: string): boolean => {
+    if (!value) {
+      setPasswordError('Password is required');
+      return false;
+    }
+    if (value.length < 6) {
+      setPasswordError('Password must be at least 6 characters');
+      return false;
+    }
+    setPasswordError(null);
+    return true;
+  };
 
   const handleLogin = () => {
+    const isEmailValid = validateEmail(email);
+    const isPasswordValid = validatePassword(password);
+    
+    if (!isEmailValid || !isPasswordValid) {
+      return;
+    }
+    
     dispatch(clearError());
     dispatch(loginRequest({ email, password }));
   };
@@ -44,6 +82,12 @@ const LoginScreen: React.FC = () => {
   const handleGuestLogin = () => {
     // Handle guest login
   };
+
+  React.useEffect(() => {
+    if (error) {
+      Alert.alert('Login Failed', error, [{ text: 'OK' }]);
+    }
+  }, [error]);
 
   return (
     <KeyboardAvoidingView
@@ -75,8 +119,12 @@ const LoginScreen: React.FC = () => {
                   autoComplete="email"
                   returnKeyType="next"
                   value={email}
-                  onChangeText={setEmail}
-                  error={error && !password ? error : undefined}
+                  onChangeText={(text) => {
+                    setEmail(text);
+                    if (emailError) validateEmail(text);
+                  }}
+                  error={emailError}
+                  onBlur={() => validateEmail(email)}
                 />
                 <AppTextInput
                   label="Password"
@@ -86,9 +134,13 @@ const LoginScreen: React.FC = () => {
                   autoComplete="password"
                   returnKeyType="done"
                   value={password}
-                  onChangeText={setPassword}
-                  error={error ? error : undefined}
+                  onChangeText={(text) => {
+                    setPassword(text);
+                    if (passwordError) validatePassword(text);
+                  }}
+                  error={passwordError}
                   onSubmitEditing={handleLogin}
+                  onBlur={() => validatePassword(password)}
                 />
               </View>
 
