@@ -13,6 +13,7 @@ This is a React Native CLI template project (`Plie`) bootstrapped with `@react-n
 - **State Management**: Redux Toolkit + Redux Saga + MMKV Persistence ✅
 - **Navigation**: React Navigation (Stack + Bottom Tabs)
 - **API Client**: Axios with interceptors (token refresh, request queuing)
+- **Webview**: react-native-webview (description rendering + map preview) ✅
 
 ## Project Structure
 ```
@@ -44,7 +45,8 @@ Plie/
 │   │   └── mmkv.d.ts     # MMKV types ✅
 │   ├── components/       # Reusable components
 │   │   ├── AppText.tsx   # Wrapper text component ✅
-│   │   └── AppTextInput.tsx # Text input with label/eye button + error ✅
+│   │   ├── AppTextInput.tsx # Text input with label/eye button + error ✅
+│   │   └── EventCard.tsx # Event card with favourite, share, remove ✅
 │   ├── hooks/            # Custom hooks
 │   │   └── useRedux.ts   # Typed Redux hooks ✅
 │   ├── screens/          # Screen components
