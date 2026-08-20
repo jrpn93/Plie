@@ -110,12 +110,11 @@ Plie/
 - Token refresh with request queuing (race condition safe) ✅
 - **Status: COMPLETE**
 
-### 4. Main App - 5 Bottom Tabs
-1. **Home** - Welcome screen with logout ✅
-2. **Search** - Search events with debounced input ✅
-3. **Events** - List of events with pull-to-refresh + skeleton loaders ✅
-4. **Favourites** - User's favourited events with optimistic UI ✅
-5. **Profile** - User profile & settings (5 options + Logout) ✅
+### 4. Main App - 4 Bottom Tabs
+1. **Events** - List of events with pull-to-refresh + skeleton loaders, pressable search bar navigates to Search ✅
+2. **Search** - Auto-focuses input on tab press, debounced search, clear button inside input ✅
+3. **Favourites** - User's favourited events with optimistic UI ✅
+4. **Profile** - User profile & settings (5 options + Logout) ✅
 - **Status: COMPLETE**
 
 ### 5. Events Screen
@@ -124,6 +123,8 @@ Plie/
 - **Pull-to-refresh** implementation ✅
 - FlatList for performance ✅
 - Each event card: title, date, location, favourite button ✅
+- **Pressable search bar** navigates to Search screen with auto-focus ✅
+- Default event image (image-preview.png) when no event image ✅
 - **Status: COMPLETE** (mock data)
 
 ### 6. Search Screen

@@ -13,6 +13,7 @@ import { mw, h, w } from '../../utils/RNSize';
 import AppText from '../../components/AppText';
 import { Event } from '../../api/api';
 import { Images } from '../../constants/images';
+import WebView from 'react-native-webview';
 
 type EventDetailsRouteParams = {
   event: Event;
@@ -31,6 +32,56 @@ const formatPrice = (event: Event) => {
     return `€${event.event_price_from}`;
   }
   return 'Free';
+};
+
+const parseDescriptionToHtml = (text: string): string => {
+  if (!text) {
+    return '<p style="color:#9A9690;font-size:14px;">No description available.</p>';
+  }
+
+  let html = text
+    .replace(/\r\n/g, '\n')
+    .replace(/\r/g, '\n');
+
+  const urlRegex = /(https?:\/\/[^\s<]+)/g;
+  html = html.replace(urlRegex, (url) => {
+    const cleanUrl = url.replace(/[.)]+$/, '');
+    return `<a href="${cleanUrl}" style="color:#0A0A0A;text-decoration:underline;">${cleanUrl}</a>`;
+  });
+
+  html = html
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<strong>$1</strong>');
+
+  html = html
+    .split('\n')
+    .map(line => line.trim() ? `<p style="margin:0 0 8px 0;line-height:1.6;color:#111111;font-size:14px;">${line}</p>` : '<br/>')
+    .join('');
+
+  return html;
+};
+
+const getMapHtml = (city: string, country: string): string => {
+  const query = encodeURIComponent(`${city}, ${country}`);
+  return `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <style>
+          * { margin: 0; padding: 0; box-sizing: border-box; }
+          body { width: 100%; height: 100%; overflow: hidden; }
+          iframe { width: 100%; height: 100%; border: 0; }
+        </style>
+      </head>
+      <body>
+        <iframe
+          src="https://www.openstreetmap.org/export/embed.html?bbox=-0.15%2C51.45%2C-0.05%2C51.55&layer=mapnik&marker=0&query=${query}"
+          loading="lazy"
+        ></iframe>
+      </body>
+    </html>
+  `;
 };
 
 const EventDetailsScreen: React.FC = () => {
@@ -127,19 +178,53 @@ const EventDetailsScreen: React.FC = () => {
         </View>
 
         <View style={styles.mapBox}>
-          <Image
-            source={{
-              uri: 'https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=1200&q=80',
-            }}
-            style={styles.mapImage}
-            resizeMode="cover"
+          <WebView
+            source={{ html: getMapHtml(event.city, event.country) }}
+            style={styles.mapWebview}
+            scrollEnabled={false}
+            showsHorizontalScrollIndicator={false}
+            showsVerticalScrollIndicator={false}
           />
         </View>
 
         <AppText style={styles.sectionTitle}>About the Event</AppText>
-        <AppText style={styles.descriptionText}>
-          {event.description || 'No description available.'}
-        </AppText>
+        <View style={styles.descriptionWebviewContainer}>
+          <WebView
+            source={{
+              html: `
+                <!DOCTYPE html>
+                <html>
+                  <head>
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+                    <style>
+                      * { margin: 0; padding: 0; box-sizing: border-box; }
+                      body {
+                        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+                        background-color: transparent;
+                        padding: 16px;
+                        color: #111111;
+                      }
+                      a { color: #0A0A0A; }
+                      p { margin: 0 0 8px 0; line-height: 1.6; font-size: 14px; color: #111111; }
+                    </style>
+                  </head>
+                  <body>
+                    ${parseDescriptionToHtml(event.description || '')}
+                  </body>
+                </html>
+              `,
+            }}
+            style={styles.descriptionWebview}
+            scrollEnabled={false}
+            showsVerticalScrollIndicator={false}
+            onShouldStartLoadWithRequest={(request) => {
+              if (request.url !== 'about:blank' && request.url !== 'about:srcdoc') {
+                return false;
+              }
+              return true;
+            }}
+          />
+        </View>
 
         <View style={styles.organizerBox}>
           <View style={styles.organizerBadge}>
@@ -276,7 +361,7 @@ const styles = StyleSheet.create({
   detailList: {
     marginTop: h(18),
     paddingHorizontal: mw(16),
-    gap: h(16),
+    gap: h(5),
   },
   detailRow: {
     flexDirection: 'row',
@@ -320,10 +405,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.border,
     backgroundColor: '#D5EAF5',
-  },
-  mapImage: {
-    width: '100%',
     height: h(150),
+  },
+  mapWebview: {
+    flex: 1,
   },
   sectionTitle: {
     fontSize: FontSize.fs12,
@@ -333,11 +418,17 @@ const styles = StyleSheet.create({
     marginTop: h(20),
     marginBottom: h(10),
   },
-  descriptionText: {
-    fontSize: FontSize.fs7,
-    color: Colors.text,
-    lineHeight: h(28),
-    paddingHorizontal: mw(16),
+  descriptionWebviewContainer: {
+    marginHorizontal: mw(16),
+    borderRadius: mw(10),
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: Colors.borderLight,
+    backgroundColor: Colors.surface,
+  },
+  descriptionWebview: {
+    flex: 1,
+    minHeight: h(200),
   },
   organizerBox: {
     marginHorizontal: mw(16),
