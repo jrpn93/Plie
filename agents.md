@@ -55,9 +55,9 @@ Plie/
 │   │   │   ├── RegisterScreen.tsx   # Register UI ✅
 │   │   │   └── ForgotPasswordScreen.tsx # Forgot password UI ✅
 │   │   ├── app/          # Main app screens ✅
-│   │   │   ├── HomeScreen.tsx       # Home with logout ✅
-│   │   │   ├── SearchScreen.tsx     # Search with debounced input ✅
 │   │   │   ├── EventsScreen.tsx     # Events with pull-to-refresh + skeletons ✅
+│   │   │   ├── EventDetailsScreen.tsx # Event details with WebView description + map ✅
+│   │   │   ├── SearchScreen.tsx     # Search with debounced input ✅
 │   │   │   ├── FavouritesScreen.tsx # Favourites with optimistic UI ✅
 │   │   │   └── ProfileScreen.tsx    # Profile with 5 options + logout ✅
 │   ├── router/           # Navigation configuration
