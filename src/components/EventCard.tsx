@@ -215,8 +215,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   overlayButton: {
-    width: w(28),
-    height: h(28),
+    width: mw(28),
+    height: mw(28),
     borderRadius: w(14),
     backgroundColor: 'rgba(0, 0, 0, 0.4)',
     justifyContent: 'center',

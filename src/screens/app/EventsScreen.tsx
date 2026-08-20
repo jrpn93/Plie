@@ -5,6 +5,7 @@ import {
   FlatList,
   RefreshControl,
   Image,
+  Pressable,
 } from 'react-native';
 import { Colors } from '../../constants/colors';
 import { FontSize } from '../../constants/fonts';
@@ -71,6 +72,10 @@ const EventsScreen: React.FC = () => {
     fetchEvents(true);
   };
 
+  const handleSearchPress = () => {
+    navigation.navigate(ROUTES.SEARCH);
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.header_logo_container}>
@@ -81,10 +86,10 @@ const EventsScreen: React.FC = () => {
         <AppText style={styles.subtitle}>
           Are you ready to dance? Explore today&apos;s movements.
         </AppText>
-        <View style={styles.searchBarContainer}>
+        <Pressable style={styles.searchBarContainer} onPress={handleSearchPress}>
           <Image source={Images.SEARCH_ICON} style={styles.searchIcon} />
           <AppText style={styles.searchPlaceholder}>Search events...</AppText>
-        </View>
+        </Pressable>
       </View>
 
       {error && (

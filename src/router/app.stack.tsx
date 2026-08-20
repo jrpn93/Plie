@@ -78,6 +78,7 @@ function AppTabs() {
           paddingTop: safeAreaInsets.top > 0 ? safeAreaInsets.top : h(10),
         },
       }}
+      initialRouteName={ROUTES.EVENTS}
     >
       <Tab.Screen
         name={ROUTES.SEARCH}

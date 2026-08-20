@@ -14,7 +14,6 @@ import { mw, h, w } from '../../utils/RNSize';
 import AppText from '../../components/AppText';
 import { Event } from '../../api/api';
 import { Images } from '../../constants/images';
-import { ROUTES } from '../../constants/routes';
 
 type EventDetailsRouteParams = {
   event: Event;

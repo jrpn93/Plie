@@ -15,4 +15,5 @@ export const Images = {
   PROFILE_ICON: require('../assets/images/user-round.png'),
   PROFILE_PLACEHOLDER: require('../assets/images/user-round.png'),
   SHARE: require('../assets/images/share.png'),
+CROSS: require('../assets/images/cross.png'),
 };

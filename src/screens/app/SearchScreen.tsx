@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, TextInput, FlatList, ActivityIndicator, Image } from 'react-native';
+import { View, StyleSheet, TextInput, FlatList, ActivityIndicator, Image, Pressable } from 'react-native';
 import { Colors } from '../../constants/colors';
 import { FontSize } from '../../constants/fonts';
 import { mw, h, w } from '../../utils/RNSize';
@@ -7,12 +7,27 @@ import AppText from '../../components/AppText';
 import { Api, Event } from '../../api/api';
 import EventCard from '../../components/EventCard';
 import { Images } from '../../constants/images';
+import { useFocusEffect } from '@react-navigation/native';
 
 const SearchScreen: React.FC = () => {
   const [query, setQuery] = React.useState('');
   const [isLoading, setIsLoading] = React.useState(false);
   const [results, setResults] = React.useState<Event[]>([]);
   const [hasSearched, setHasSearched] = React.useState(false);
+  const searchInputRef = React.useRef<any>(null);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      searchInputRef.current?.focus();
+    }, [])
+  );
+
+  const clearSearch = () => {
+    setQuery('');
+    setResults([]);
+    setHasSearched(false);
+    searchInputRef.current?.focus();
+  };
 
   React.useEffect(() => {
     const timer = setTimeout(() => {
@@ -59,13 +74,21 @@ const SearchScreen: React.FC = () => {
         <Image source={Images.LOGO} style={styles.header_logo} />
       </View>
       <View style={styles.searchBarContainer}>
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Search events..."
-          value={query}
-          onChangeText={setQuery}
-          placeholderTextColor={Colors.placeholder}
-        />
+        <View style={styles.inputWrapper}>
+          <TextInput
+            ref={searchInputRef}
+            style={styles.searchInput}
+            placeholder="Search events..."
+            value={query}
+            onChangeText={setQuery}
+            placeholderTextColor={Colors.placeholder}
+          />
+          {query && (
+            <Pressable style={styles.clearButton} onPress={clearSearch} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+              <Image source={Images.CROSS} style={styles.clearIcon} />
+            </Pressable>
+          )}
+        </View>
         {isLoading && <ActivityIndicator size="small" color={Colors.primary} style={styles.loadingIndicator} />}
       </View>
       {hasSearched && results.length === 0 && !isLoading ? (
@@ -114,14 +137,27 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: Colors.border,
   },
-  searchInput: {
-    flex: 1,
-    height: h(44),
+  inputWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    height: h(34),
     backgroundColor: Colors.surfaceSecondary,
     borderRadius: mw(12),
     paddingHorizontal: mw(16),
+  },
+  searchInput: {
+    flex: 1,
     fontSize: FontSize.fs6,
     color: Colors.text,
+  },
+  clearButton: {
+    padding: mw(4),
+    marginLeft: mw(8),
+  },
+  clearIcon: {
+    width: mw(18),
+    height: h(18),
+    tintColor: Colors.textMuted,
   },
   loadingIndicator: {
     marginLeft: w(8),
@@ -129,45 +165,6 @@ const styles = StyleSheet.create({
   listContent: {
     padding: mw(16),
     gap: h(12),
-  },
-  card: {
-    backgroundColor: Colors.surface,
-    borderRadius: mw(16),
-    padding: mw(16),
-    borderWidth: 1,
-    borderColor: Colors.borderLight,
-    shadowColor: Colors.black,
-    shadowOffset: { width: 0, height: h(1) },
-    shadowOpacity: 0.05,
-    shadowRadius: mw(4),
-    elevation: 1,
-  },
-  cardHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: h(8),
-  },
-  cardTitle: {
-    fontSize: FontSize.fs7,
-    fontWeight: '600',
-    color: Colors.text,
-    flex: 1,
-    marginRight: w(8),
-  },
-  favButton: {
-    fontSize: FontSize.fs8,
-    color: Colors.textMuted,
-  },
-  favButtonActive: {
-    color: Colors.error,
-  },
-  cardDetails: {
-    gap: h(4),
-  },
-  detailText: {
-    fontSize: FontSize.fs3,
-    color: Colors.textSecondary,
   },
   emptyState: {
     flex: 1,
