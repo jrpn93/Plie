@@ -68,7 +68,7 @@ Plie/
 │   │   ├── RNSize.ts     # Responsive sizing helpers ✅
 │   │   └── Storage.ts    # MMKV storage for redux-persist ✅
 │   └── assets/           # Images, fonts, etc.
-│       └── images/       # logo.png, dancing-girl-bg.png, eye.png, eye-off.png ✅
+│       └── images/       # logo.png, dancing-girl-bg.png, eye.png, eye-off.png, plie-elevate.png, apple-logo.png, google.png, facebook.png, house.png, search.png, calendar-days.png, heart.png, heart-filled.png, user-round.png, share.png, cross.png, arrow-left.png, map-pin.png, calendar-days-bold.png, ticket.png, credit-card.png, circle-question-mark.png, log-out.png, check.png, image-preview.png ✅
 ├── __tests__/            # Jest test files (EMPTY)
 ├── App.tsx               # Main app with Provider + PersistGate ✅
 ├── babel.config.js       # Babel configuration
@@ -127,6 +127,7 @@ Plie/
 - Each event card: title, date, location, favourite button ✅
 - **Pressable search bar** navigates to Search screen with auto-focus ✅
 - Default event image (image-preview.png) when no event image ✅
+- **Back button closes app** (BackHandler.exitApp) ✅
 - **Status: COMPLETE** (mock data)
 
 ### 6. Search Screen
@@ -135,13 +136,22 @@ Plie/
 - Clear search functionality ✅
 - **Status: COMPLETE** (mock data)
 
-### 7. Favourites - Optimistic UI
+### 7. Event Details Screen
+- Hero image with favourite/share buttons ✅
+- Date, time, location details with image icons ✅
+- **WebView map preview** using OpenStreetMap tiles (no UI chrome) ✅
+- **WebView description rendering** (HTML with styled text, bold, auto-linked URLs) ✅
+- Organizer section ✅
+- Share tickets CTA ✅
+- **Status: COMPLETE**
+
+### 8. Favourites - Optimistic UI
 - Tap favourite button → immediate UI update ✅
 - Background API call to add/remove favourite (mocked) ✅
 - Rollback on API failure (ready for implementation) ✅
 - **Status: COMPLETE** (mock data)
 
-### 8. Profile Screen
+### 9. Profile Screen
 - Profile picture (placeholder + camera button) ✅
 - Name & email display from Redux ✅
 - 5 option items: Settings, Notifications, Help, About, Logout ✅
@@ -163,8 +173,8 @@ Plie/
 
 ### Component Structure
 - **App.tsx**: Root with Providers (SafeArea, Navigation, Redux, PersistGate) ✅
-- **Screens**: Auth screens (Login, Register, ForgotPassword) + App screens (Home, Search, Events, Favourites, Profile)
-- **Shared Components**: AppText, AppTextInput (with error support)
+- **Screens**: Auth screens (Login, Register, ForgotPassword) + App screens (Events, Search, Favourites, Profile)
+- **Shared Components**: AppText, AppTextInput (with error support), EventCard
 
 ### Redux Store Structure (Implemented)
 ```
@@ -187,12 +197,13 @@ Auth Stack (unauthenticated):
 └── ForgotPassword
 
 App Stack (authenticated) - Bottom Tabs:
-├── Home
-├── Search
 ├── Events
+├── Search
 ├── Favourites
 └── Profile
 ```
+
+Events tab also navigates to EventDetailsScreen (pushed on stack).
 
 ### Authentication Flow
 1. App starts → PersistGate waits for Redux hydration
@@ -231,7 +242,7 @@ bundle install
 bundle exec pod install
 ```
 
-**Note:** All dependencies already installed including Redux Toolkit, Redux Saga, Axios, react-native-mmkv, React Navigation.
+**Note:** All dependencies already installed including Redux Toolkit, Redux Saga, Axios, react-native-mmkv, React Navigation, react-native-webview.
 
 ## Key Files for Review
 - `src/store/index.ts` - Redux store with Saga middleware + MMKV persist
@@ -285,6 +296,7 @@ bundle exec pod install
 - [x] Search screen with debounced search
 - [x] Search API integration (mocked)
 - [x] Add Search, Events, Favourites, Profile tabs to bottom tabs
+- [x] Event details screen with WebView description + map preview
 
 ### Phase 4: Favourites (Optimistic UI)
 - [x] Favourites UI with optimistic updates
@@ -320,6 +332,7 @@ bundle exec pod install
   "@react-navigation/bottom-tabs": "^7.18.17",
   "@react-navigation/native-stack": "^7.18.9",
   "react-native-screens": "^4.27.0",
-  "react-native-safe-area-context": "^5.9.1"
+  "react-native-safe-area-context": "^5.9.1",
+  "react-native-webview": "^13.13.5"
 }
 ```
