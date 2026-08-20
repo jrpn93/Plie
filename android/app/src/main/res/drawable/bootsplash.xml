@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Fullscreen background -->
+    <item>
+        <bitmap
+            android:src="@drawable/dancing_girl_bg"
+            android:gravity="fill" />
+    </item>
+
+    <!-- Larger centered main logo -->
+    <item
+        android:width="300dp"
+        android:height="150dp"
+        android:gravity="center">
+
+        <bitmap
+            android:src="@drawable/plie_elevate"
+            android:gravity="fill" />
+
+    </item>
+
+    <!-- Larger bottom branding -->
+    <item
+        android:width="175dp"
+        android:height="65dp"
+        android:gravity="bottom|center_horizontal">
+
+        <inset
+            android:insetBottom="32dp">
+
+            <bitmap
+                android:src="@drawable/your_dance"
+                android:gravity="fill" />
+
+        </inset>
+
+    </item>
+
+</layer-list>
