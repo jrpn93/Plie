@@ -157,6 +157,7 @@ const styles = StyleSheet.create({
   clearIcon: {
     width: mw(18),
     height: h(18),
+    resizeMode: 'contain',
     tintColor: Colors.textMuted,
   },
   loadingIndicator: {

@@ -5,7 +5,6 @@ import {
   ScrollView,
   Pressable,
   Image,
-  SafeAreaView,
 } from 'react-native';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { Colors } from '../../constants/colors';
@@ -19,7 +18,10 @@ type EventDetailsRouteParams = {
   event: Event;
 };
 
-type EventDetailsRouteProp = RouteProp<Record<string, EventDetailsRouteParams>, string>;
+type EventDetailsRouteProp = RouteProp<
+  Record<string, EventDetailsRouteParams>,
+  string
+>;
 
 const formatPrice = (event: Event) => {
   if (event.event_price_from && event.event_price_to) {
@@ -38,28 +40,38 @@ const EventDetailsScreen: React.FC = () => {
 
   if (!event) {
     return (
-      <SafeAreaView style={styles.container}>
+      <View style={styles.container}>
         <View style={styles.emptyState}>
           <AppText style={styles.emptyText}>Event details unavailable</AppText>
         </View>
-      </SafeAreaView>
+      </View>
     );
   }
 
   const eventImage = event.event_profile_img || event.event_profile_pic;
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.content}>
+    <View style={styles.container}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.content}
+      >
         <View style={styles.topBar}>
-          <Pressable onPress={() => navigation.goBack()} style={styles.backButton}>
-            <AppText style={styles.backArrow}>←</AppText>
+          <Pressable
+            onPress={() => navigation.goBack()}
+            style={styles.backButton}
+          >
+            <Image source={Images.ARROW_LEFT} style={styles.backArrow} />
           </Pressable>
         </View>
 
         <View style={styles.heroCard}>
           {eventImage ? (
-            <Image source={{ uri: eventImage }} style={styles.heroImage} resizeMode="cover" />
+            <Image
+              source={{ uri: eventImage }}
+              style={styles.heroImage}
+              resizeMode="cover"
+            />
           ) : (
             <View style={styles.heroFallback}>
               <AppText style={styles.heroFallbackText}>ADICTO</AppText>
@@ -77,7 +89,9 @@ const EventDetailsScreen: React.FC = () => {
         </View>
 
         <View style={styles.metaRow}>
-          <View style={styles.pill}><AppText style={styles.pillText}>Workshop</AppText></View>
+          <View style={styles.pill}>
+            <AppText style={styles.pillText}>Workshop</AppText>
+          </View>
           <AppText style={styles.metaText}>{event.city}</AppText>
         </View>
 
@@ -87,7 +101,7 @@ const EventDetailsScreen: React.FC = () => {
         <View style={styles.detailList}>
           <View style={styles.detailRow}>
             <View style={styles.detailIconWrap}>
-              <AppText style={styles.detailIcon}>🗓</AppText>
+              <Image source={Images.CALENDAR_BOLD} style={styles.detailIcon} />
             </View>
             <View style={styles.detailValueWrap}>
               <AppText style={styles.label}>DATE & TIME</AppText>
@@ -101,25 +115,31 @@ const EventDetailsScreen: React.FC = () => {
 
           <View style={styles.detailRow}>
             <View style={styles.detailIconWrap}>
-              <AppText style={styles.detailIcon}>📍</AppText>
+              <Image source={Images.MAP_PIN} style={styles.detailIcon} />
             </View>
             <View style={styles.detailValueWrap}>
               <AppText style={styles.label}>LOCATION</AppText>
-              <AppText style={styles.detailValue}>{event.city}, {event.country}</AppText>
+              <AppText style={styles.detailValue}>
+                {event.city}, {event.country}
+              </AppText>
             </View>
           </View>
         </View>
 
         <View style={styles.mapBox}>
           <Image
-            source={{ uri: 'https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=1200&q=80' }}
+            source={{
+              uri: 'https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=1200&q=80',
+            }}
             style={styles.mapImage}
             resizeMode="cover"
           />
         </View>
 
         <AppText style={styles.sectionTitle}>About the Event</AppText>
-        <AppText style={styles.descriptionText}>{event.description || 'No description available.'}</AppText>
+        <AppText style={styles.descriptionText}>
+          {event.description || 'No description available.'}
+        </AppText>
 
         <View style={styles.organizerBox}>
           <View style={styles.organizerBadge}>
@@ -136,7 +156,7 @@ const EventDetailsScreen: React.FC = () => {
           <AppText style={styles.ctaText}>Share tickets</AppText>
         </Pressable>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -146,6 +166,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.background,
+    paddingTop: h(8),
   },
   content: {
     paddingBottom: h(32),
@@ -161,9 +182,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   backArrow: {
-    fontSize: FontSize.fs18,
-    color: Colors.text,
-    fontWeight: '600',
+    width: w(24),
+    height: h(24),
+    resizeMode: 'contain',
+    tintColor: Colors.text,
   },
   heroCard: {
     marginHorizontal: mw(16),
@@ -198,8 +220,8 @@ const styles = StyleSheet.create({
     gap: w(12),
   },
   iconButton: {
-    width: w(36),
-    height: h(36),
+    width: mw(36),
+    height: mw(36),
     borderRadius: mw(18),
     backgroundColor: 'rgba(255,255,255,0.9)',
     justifyContent: 'center',
@@ -237,7 +259,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   eventTitle: {
-    fontSize: FontSize.fs18,
+    fontSize: FontSize.fs14,
     fontWeight: '700',
     color: Colors.text,
     paddingHorizontal: mw(16),
@@ -245,7 +267,7 @@ const styles = StyleSheet.create({
     lineHeight: h(36),
   },
   priceText: {
-    fontSize: FontSize.fs12,
+    fontSize: FontSize.fs8,
     fontWeight: '700',
     color: Colors.text,
     paddingHorizontal: mw(16),
@@ -268,7 +290,10 @@ const styles = StyleSheet.create({
     marginTop: h(2),
   },
   detailIcon: {
-    fontSize: FontSize.fs8,
+    width: w(22),
+    height: h(22),
+    resizeMode: 'contain',
+    tintColor: Colors.primary,
   },
   detailValueWrap: {
     flex: 1,

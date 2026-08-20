@@ -3,7 +3,7 @@ import { KeyboardAvoidingView, Platform, ScrollView, Pressable, View, Image, Sty
 import { Colors } from '../../constants/colors';
 import { FontSize } from '../../constants/fonts';
 import { Images } from '../../constants/images';
-import { mw, h } from '../../utils/RNSize';
+import { mw, h, w } from '../../utils/RNSize';
 import AppText from '../../components/AppText';
 import AppTextInput from '../../components/AppTextInput';
 
@@ -42,7 +42,7 @@ const ForgotPasswordScreen: React.FC = () => {
             <View style={styles.card}>
               <View style={styles.successContainer}>
                 <View style={styles.successIcon}>
-                  <AppText style={styles.checkmark}>✓</AppText>
+                  <Image source={Images.CHECK} style={styles.checkmark} />
                 </View>
                 <AppText style={styles.successTitle}>Check Your Email</AppText>
                 <AppText style={styles.successMessage}>
@@ -114,11 +114,10 @@ const ForgotPasswordScreen: React.FC = () => {
               </AppText>
             </Pressable>
 
-            <View style={styles.backContainer}>
-              <AppText onPress={handleBackToLogin} style={styles.backText}>
-                ← Back to Login
-              </AppText>
-            </View>
+            <Pressable style={styles.backContainer} onPress={handleBackToLogin}>
+              <Image source={Images.ARROW_LEFT} style={styles.backArrow} />
+              <AppText style={styles.backText}>Back to Login</AppText>
+            </Pressable>
           </View>
         </View>
       </ScrollView>
@@ -200,6 +199,15 @@ const styles = StyleSheet.create({
   backContainer: {
     marginTop: h(24),
     alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: mw(6),
+  },
+  backArrow: {
+    width: w(14),
+    height: h(14),
+    resizeMode: 'contain',
+    tintColor: Colors.primary,
   },
   backText: {
     fontSize: FontSize.fs4,
@@ -228,9 +236,10 @@ const styles = StyleSheet.create({
     marginBottom: h(24),
   },
   checkmark: {
-    fontSize: FontSize.fs16,
-    color: Colors.success,
-    fontWeight: 'bold',
+    width: mw(40),
+    height: mw(40),
+    resizeMode: 'contain',
+    tintColor: Colors.success,
   },
   successTitle: {
     fontSize: FontSize.fs10,

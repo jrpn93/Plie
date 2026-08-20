@@ -1,17 +1,23 @@
 import React from 'react';
-import { View, StyleSheet, Pressable, Image } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Pressable,
+  Image,
+  ImageSourcePropType,
+} from 'react-native';
 import { logout } from '../../store/slices/authSlice';
 import { Colors } from '../../constants/colors';
 import { FontSize } from '../../constants/fonts';
 import { Images } from '../../constants/images';
-import { mw, h } from '../../utils/RNSize';
+import { mw, h, w } from '../../utils/RNSize';
 import AppText from '../../components/AppText';
 import { useAppDispatch, useAppSelector } from '../../hooks/useRedux';
 
 interface ProfileOption {
   id: string;
   title: string;
-  icon: string;
+  icon: ImageSourcePropType;
   onPress: () => void;
   isDestructive?: boolean;
 }
@@ -21,19 +27,34 @@ const ProfileScreen: React.FC = () => {
   const { user, isAuthenticated } = useAppSelector(state => state.auth);
 
   const options: ProfileOption[] = [
-    { id: 'tickets', title: 'My Tickets', icon: '🎟', onPress: () => {} },
-    { id: 'payment', title: 'Payment Methods', icon: '💳', onPress: () => {} },
+    {
+      id: 'tickets',
+      title: 'My Tickets',
+      icon: Images.TICKET,
+      onPress: () => {},
+    },
+    {
+      id: 'payment',
+      title: 'Payment Methods',
+      icon: Images.CREDIT_CARD,
+      onPress: () => {},
+    },
     {
       id: 'notifications',
       title: 'Notification Settings',
-      icon: '🔔',
+      icon: Images.BELL,
       onPress: () => {},
     },
-    { id: 'help', title: 'Help & Support', icon: '❔', onPress: () => {} },
+    {
+      id: 'help',
+      title: 'Help & Support',
+      icon: Images.QUESTION_MARK,
+      onPress: () => {},
+    },
     {
       id: 'logout',
       title: 'Logout',
-      icon: '⟵',
+      icon: Images.LOG_OUT,
       onPress: () => dispatch(logout()),
       isDestructive: true,
     },
@@ -61,7 +82,7 @@ const ProfileScreen: React.FC = () => {
             resizeMode="cover"
           />
           <View style={styles.cameraButton}>
-            <AppText style={styles.cameraIcon}>✎</AppText>
+            <Image source={Images.CROSS} style={styles.cameraIcon} />
           </View>
         </Pressable>
 
@@ -91,10 +112,10 @@ const ProfileScreen: React.FC = () => {
               onPress={option.isDestructive ? option.onPress : () => {}}
               android_ripple={{ color: Colors.borderLight, borderless: false }}
             >
-              <AppText style={styles.optionIcon}>{option.icon}</AppText>
+              <Image source={option.icon} style={styles.optionIcon} />
               <AppText style={optionTitleStyle}>{option.title}</AppText>
               {!option.isDestructive && (
-                <AppText style={styles.chevron}>›</AppText>
+                <Image source={Images.ARROW_LEFT} style={styles.chevron} />
               )}
             </Pressable>
           );
@@ -170,9 +191,10 @@ const styles = StyleSheet.create({
     borderColor: Colors.background,
   },
   cameraIcon: {
-    fontSize: FontSize.fs5,
-    color: Colors.white,
-    fontWeight: '700',
+    width: mw(18),
+    height: mw(18),
+    resizeMode: 'contain',
+    tintColor: Colors.white,
   },
   userName: {
     fontSize: FontSize.fs12,
@@ -208,9 +230,11 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0,
   },
   optionIcon: {
-    fontSize: FontSize.fs7,
+    width: mw(22),
+    height: mw(22),
+    resizeMode: 'contain',
     marginRight: mw(12),
-    width: mw(24),
+    tintColor: Colors.text,
   },
   optionTitle: {
     fontSize: FontSize.fs7,
@@ -222,9 +246,11 @@ const styles = StyleSheet.create({
     color: Colors.error,
   },
   chevron: {
-    fontSize: FontSize.fs14,
-    color: Colors.textMuted,
-    lineHeight: h(26),
+    width: w(16),
+    height: h(16),
+    resizeMode: 'contain',
+    tintColor: Colors.textMuted,
+    transform: [{ rotate: '180deg' }],
   },
   guestNotice: {
     position: 'absolute',

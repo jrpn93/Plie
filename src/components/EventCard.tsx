@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, StyleSheet, Pressable, Image } from 'react-native';
 import { Colors } from '../constants/colors';
 import { FontSize } from '../constants/fonts';
@@ -30,37 +30,72 @@ interface EventCardProps {
   onPress?: (event: Event) => void;
 }
 
-const EventCard: React.FC<EventCardProps> = ({ event, onFavourite, variant = 'default', onRemove, onShare, onPress }) => {
-  const eventImage = getEventImage(event);
+const EventCard: React.FC<EventCardProps> = ({
+  event,
+  onFavourite,
+  variant = 'default',
+  onRemove,
+  onShare,
+  onPress,
+}) => {
+  const [eventImage, setEventImage] = useState<string | null>(
+    getEventImage(event),
+  );
 
   if (variant === 'compact') {
     return (
       <Pressable onPress={() => onPress?.(event)}>
         <View style={styles.cardCompact}>
-        <View style={styles.cardHeaderCompact}>
-          <AppText style={styles.cardTitleCompact}>{event.event_name}</AppText>
-          {onRemove ? (
-            <Pressable onPress={() => onRemove(event.event_id)} style={styles.removeButtonCompact}>
-              <AppText style={styles.removeButtonTextCompact}>Remove</AppText>
-            </Pressable>
-          ) : (
-            <Pressable onPress={() => onFavourite(event.event_id)} style={styles.favButtonWrapCompact}>
-              <Image
-                source={event.isFavorite ? Images.HEART_FILLED_ICON : Images.HEART_ICON}
-                style={styles.favIconCompact}
-              />
-            </Pressable>
-          )}
-        </View>
-        <View style={styles.cardDetailsCompact}>
-          <AppText style={styles.detailTextCompact}>📅 {event.readable_from_date}{event.readable_to_date ? ` - ${event.readable_to_date}` : ''}</AppText>
-          <AppText style={styles.detailTextCompact}>📍 {event.city}, {event.country}</AppText>
-          {event.danceStyles && event.danceStyles.length > 0 && (
-            <AppText style={styles.detailTextCompact}>
-              {event.danceStyles.map((ds) => ds.ds_name).join(', ')}
+          <View style={styles.cardHeaderCompact}>
+            <AppText style={styles.cardTitleCompact}>
+              {event.event_name}
             </AppText>
-          )}
-        </View>
+            {onRemove ? (
+              <Pressable
+                onPress={() => onRemove(event.event_id)}
+                style={styles.removeButtonCompact}
+              >
+                <AppText style={styles.removeButtonTextCompact}>Remove</AppText>
+              </Pressable>
+            ) : (
+              <Pressable
+                onPress={() => onFavourite(event.event_id)}
+                style={styles.favButtonWrapCompact}
+              >
+                <Image
+                  source={
+                    event.isFavorite
+                      ? Images.HEART_FILLED_ICON
+                      : Images.HEART_ICON
+                  }
+                  style={styles.favIconCompact}
+                />
+              </Pressable>
+            )}
+          </View>
+          <View style={styles.cardDetailsCompact}>
+            <View style={styles.detailTextCompactRow}>
+              <Image
+                source={Images.CALENDAR}
+                style={styles.detailIconCompact}
+              />
+              <AppText style={styles.detailTextCompact}>
+                {event.readable_from_date}
+                {event.readable_to_date ? ` - ${event.readable_to_date}` : ''}
+              </AppText>
+            </View>
+            <View style={styles.detailTextCompactRow}>
+              <Image source={Images.MAP_PIN} style={styles.detailIconCompact} />
+              <AppText style={styles.detailTextCompact}>
+                {event.city}, {event.country}
+              </AppText>
+            </View>
+            {event.danceStyles && event.danceStyles.length > 0 && (
+              <AppText style={styles.detailTextCompact}>
+                {event.danceStyles.map(ds => ds.ds_name).join(', ')}
+              </AppText>
+            )}
+          </View>
         </View>
       </Pressable>
     );
@@ -69,52 +104,74 @@ const EventCard: React.FC<EventCardProps> = ({ event, onFavourite, variant = 'de
   return (
     <Pressable onPress={() => onPress?.(event)}>
       <View style={styles.cardRow}>
-      <View style={styles.eventImageContainer}>
-        {eventImage ? (
-          <Image source={{ uri: eventImage }} style={styles.eventImage} resizeMode="cover" />
-        ) : (
-          <View style={styles.imagePlaceholder} />
-        )}
-        <View style={styles.imageOverlayButtons}>
-          <Pressable onPress={() => onShare?.(event.event_id)} style={styles.overlayButton}>
-            <Image source={Images.SHARE} style={styles.overlayIcon} />
-          </Pressable>
-          <Pressable onPress={() => onFavourite(event.event_id)} style={styles.overlayButton}>
+        <View style={styles.eventImageContainer}>
+          {eventImage ? (
             <Image
-              source={event.isFavorite ? Images.HEART_FILLED_ICON : Images.HEART_ICON}
-              style={styles.overlayIcon}
+              defaultSource={Images.IMAGE_PREVIEW}
+              source={{ uri: eventImage }}
+              style={styles.eventImage}
+              resizeMode="cover"
+              onError={() => setEventImage(null)}
             />
-          </Pressable>
-        </View>
-      </View>
-
-      <View style={styles.metaContainer}>
-        <View style={styles.tagRow}>
-          <View style={styles.tagChip}>
-            <AppText style={styles.tagText}>{event.city}</AppText>
+          ) : (
+            <Image
+              source={Images.IMAGE_PREVIEW}
+              style={styles.eventImage}
+              resizeMode="cover"
+            />
+          )}
+          <View style={styles.imageOverlayButtons}>
+            <Pressable
+              onPress={() => onShare?.(event.event_id)}
+              style={styles.overlayButton}
+            >
+              <Image source={Images.SHARE} style={styles.overlayIcon} />
+            </Pressable>
+            <Pressable
+              onPress={() => onFavourite(event.event_id)}
+              style={styles.overlayButton}
+            >
+              <Image
+                source={
+                  event.isFavorite
+                    ? Images.HEART_FILLED_ICON
+                    : Images.HEART_ICON
+                }
+                style={styles.overlayIcon}
+              />
+            </Pressable>
           </View>
-          <AppText style={styles.cityText}>{event.country}</AppText>
         </View>
 
-        <AppText style={styles.cardTitle}>{event.event_name}</AppText>
+        <View style={styles.metaContainer}>
+          <View style={styles.tagRow}>
+            <View style={styles.tagChip}>
+              <AppText style={styles.tagText}>{event.city}</AppText>
+            </View>
+            <AppText style={styles.cityText}>{event.country}</AppText>
+          </View>
 
-        <View style={styles.detailRow}>
-          <AppText style={styles.detailIcon}>📍</AppText>
-          <AppText style={styles.detailText}>{event.city}, {event.country}</AppText>
-        </View>
+          <AppText style={styles.cardTitle}>{event.event_name}</AppText>
 
-        <View style={styles.footerRow}>
           <View style={styles.detailRow}>
-            <AppText style={styles.detailIcon}>📅</AppText>
+            <Image source={Images.MAP_PIN} style={styles.detailIcon} />
             <AppText style={styles.detailText}>
-              {event.readable_from_date}
-              {event.readable_to_date ? ` - ${event.readable_to_date}` : ''}
+              {event.city}, {event.country}
             </AppText>
           </View>
-          <AppText style={styles.priceText}>{formatPrice(event)}</AppText>
+
+          <View style={styles.footerRow}>
+            <View style={styles.detailRow}>
+              <Image source={Images.CALENDAR} style={styles.detailIcon} />
+              <AppText style={styles.detailText}>
+                {event.readable_from_date}
+                {event.readable_to_date ? ` - ${event.readable_to_date}` : ''}
+              </AppText>
+            </View>
+            <AppText style={styles.priceText}>{formatPrice(event)}</AppText>
+          </View>
         </View>
       </View>
-    </View>
     </Pressable>
   );
 };
@@ -141,11 +198,6 @@ const styles = StyleSheet.create({
   eventImage: {
     width: '100%',
     height: '100%',
-  },
-  imagePlaceholder: {
-    width: '100%',
-    height: '100%',
-    backgroundColor: Colors.borderLight,
   },
   metaContainer: {
     flex: 1,
@@ -186,8 +238,10 @@ const styles = StyleSheet.create({
     gap: w(6),
   },
   detailIcon: {
-    fontSize: FontSize.fs3,
-    color: Colors.textMuted,
+    width: w(14),
+    height: h(14),
+    resizeMode: 'contain',
+    tintColor: Colors.textMuted,
   },
   detailText: {
     fontSize: FontSize.fs3,
@@ -272,6 +326,17 @@ const styles = StyleSheet.create({
   },
   cardDetailsCompact: {
     gap: h(4),
+  },
+  detailTextCompactRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: w(6),
+  },
+  detailIconCompact: {
+    width: w(12),
+    height: h(12),
+    resizeMode: 'contain',
+    tintColor: Colors.textMuted,
   },
   detailTextCompact: {
     fontSize: FontSize.fs3,
